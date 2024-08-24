@@ -102,8 +102,9 @@ classdef MultipathChannel<handle
             N=length(samples);
             copies=zeros(rays, N);
             for i=1:rays
-                copies(i, multipath_params.offsets(i):end)=...
-                    samples(1:N-multipath_params.offsets(i)+1)*multipath_params.gains(i);
+                copies(i, :)=...
+                [zeros(1,multipath_params.offsets(i)) ...
+                samples(1:N-multipath_params.offsets(i))]*multipath_params.gains(i);
             end
             signal=sum(copies)+samples;
         end
