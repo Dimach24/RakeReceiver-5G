@@ -1,4 +1,52 @@
 classdef MultipathChannel<handle
+    properties
+        params
+    end
+    methods
+        function obj = MultipathChannel(rays_count, ...
+            min_rays_path_diff, max_rays_path_diff, ...
+            samples_rate, ...
+            mean_attenuation,...
+            do_phase_distortion)
+            arguments(Input)
+                % totally rays (main ray included)
+                rays_count (1, 1) {mustBeInteger, mustBePositive};
+                % minimal distance in meters between main and reflected ray
+                min_rays_path_diff (1, 1) {mustBePositive};
+                % maximal distance in meters between main and reflected ray
+                max_rays_path_diff (1, 1) {mustBePositive};
+                % samples per 1 second
+                samples_rate (1, 1) {mustBeInteger, mustBePositive};
+                % mean value for Rayleigh distributed amplitude
+                % attenuation (gain) factors for reflected rays
+                mean_attenuation (1, 1) {mustBePositive};
+                % does reflection provoke a uniform phase shift for reflected rays
+                do_phase_distortion (1, 1) {mustBeNonempty} = true;
+            end
+            obj.params=MultipathChannel.generateRaysParams(...
+                rays_count,...
+                min_rays_path_diff, max_rays_path_diff,...
+                samples_rate,...
+                mean_attenuation,...
+                do_phase_distortion);
+        end
+        function signal=lt(channel, samples)
+            % applies channel params to the signal
+            arguments
+                channel MultipathChannel;
+                samples;
+            end
+            signal=MultipathChannel.generateMultipathSignal(samples,channel.params);
+        end
+        function signal=gt(samples,channel)
+            % applies channel params to the signal
+            arguments
+                samples;
+                channel MultipathChannel;
+            end
+            signal=MultipathChannel.generateMultipathSignal(samples,channel.params);
+        end
+    end
     methods(Static)
         function multipath_params = generateRaysParams(rays_count, ...
                 min_rays_path_diff, max_rays_path_diff, ...
