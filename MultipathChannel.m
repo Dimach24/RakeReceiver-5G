@@ -81,9 +81,9 @@ classdef MultipathChannel<handle
                 multipath_params.gains=abs(multipath_params.gains);
             end
             max_time_delay=max_rays_path_diff/3e8; % 3e8 = speed of light
-            max_samples_offset=floor(max_time_delay*samples_rate)
+            max_samples_offset=floor(max_time_delay*samples_rate);
             min_time_delay=min_rays_path_diff/3e8;
-            min_samples_offset=floor(min_time_delay*samples_rate)
+            min_samples_offset=floor(min_time_delay*samples_rate);
             multipath_params.offsets=randi([min_samples_offset+1 max_samples_offset], 1, rays_count-1);
         end
         function signal=generateMultipathSignal(samples, multipath_params)
