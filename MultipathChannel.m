@@ -105,7 +105,7 @@ classdef MultipathChannel<handle
                 copies(i, multipath_params.offsets(i):end)=...
                     samples(1:N-multipath_params.offsets(i)+1)*multipath_params.gains(i);
             end
-            signal=sum(copies);
+            signal=sum(copies)+samples;
         end
     end
 end
