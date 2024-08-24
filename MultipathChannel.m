@@ -25,7 +25,7 @@ classdef MultipathChannel<handle
                 % structure with fields {offsets, gains} which are rays_count-1 length
                 multipath_params (1,1)
             end
-            % mean(Rayleigh)=sqrt(pi/2)*std(Gauss), where Rayleigh=sqrt(GaussX^2+GaussY^2)
+            % mean(Rayleigh)=sqr.t(pi/2)*std(Gauss), where Rayleigh=sqrt(GaussX^2+GaussY^2)
             % n_std = std(Gauss); std of normally distributed GaussX and GaussY
             n_std=mean_attenuation*sqrt(2/pi);
             multipath_params.gains=randn(1, rays_count-1)*n_std+1j*randn(1, rays_count-1)*n_std;
@@ -39,6 +39,17 @@ classdef MultipathChannel<handle
             multipath_params.offsets=randi([min_samples_offset+1 max_samples_offset], 1, rays_count-1);
         end
         function signal=generateMultipathSignal(samples, multipath_params)
+            % generates multipath signal according to params
+            arguments(Input)
+                % the signal
+                samples
+                % struct with fields `offsets` and `gains` for each ray except the main
+                multipath_params
+            end
+            arguments(Output)
+                % superposition of reflected and distorted rays with main 
+                signal
+            end
             rays=length(multipath_params.gains);
             N=length(samples);
             copies=zeros(rays, N);
