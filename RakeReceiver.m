@@ -1,7 +1,18 @@
 classdef RakeReceiver
     methods(Static)
-        function processedSignal=receiveRaysByCorrPeaks(samples,peaks_shifts,peaks_values)
-            
+        function processed_signal=receiveRaysByCorrPeaks(samples,peaks_shifts,peaks_values)
+            peaks_shifts=peaks_shifts(peaks_shifts>=0);
+            fingers=length(peaks_shifts);
+            rays=zeros(fingers,length(samples));
+            coefs=abs(peaks_values).^2;
+            coefs=coefs/sum(coefs);
+            phase_correction=peaks_values./abs(peaks_values);
+            coefs=coefs./phase_correction;
+            for i=1:fingers;
+                rays(i,1:length(samples)-peaks_shifts(i)+1)=...
+                    samples(peaks_shifts(i):end)*coefs(i);
+            end
+            processed_signal=sum(rays);
         end
     end
 end
