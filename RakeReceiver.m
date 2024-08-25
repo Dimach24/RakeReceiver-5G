@@ -1,6 +1,12 @@
 classdef RakeReceiver
     methods(Static)
         function processed_signal=receiveRaysByCorrPeaks(samples,peaks_shifts,peaks_values)
+            % process signal with rake-receive algorithm
+            arguments
+                samples % signal samples array
+                peaks_shifts % shifts to the reflected rays
+                peaks_values % values of correlation function at the peaks
+            end
             peaks_shifts=peaks_shifts(peaks_shifts>=0);
             fingers=length(peaks_shifts);
             rays=zeros(fingers,length(samples));
